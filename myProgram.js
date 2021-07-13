@@ -17,7 +17,7 @@ class Sort {
   }
   
   validateName(newName) {
-    if (newName !== undefined && newName !== null && ["Tri à bulle", "Tri par insertion", "Tri par sélection", "Tri rapide"].includes(newName)) {
+    if (newName !== undefined && newName !== null && ["Tri à bulles", "Tri par insertion", "Tri par sélection", "Tri rapide"].includes(newName)) {
       return newName;
     } else {
       console.log("Le nom du tri doit être l'une des valeurs suivantes : \"Tri à bulle\", \"Tri par insertion\", \"Tri par sélection\" ou \"Tri rapide\"!");
@@ -43,13 +43,13 @@ class Sort {
   }
   
   getAllInfo(numbersArray) {
-    return `${this.name}: ${this.comparisonsNumber} comparaisons - [${numbersArray}]\n`;
+    return `${this.name}: ${this.comparisonsNumber} comparaison(s) - [${numbersArray}]\n`;
   }
 }
 
 class BubbleSort extends Sort {
-  constructor(name, numbersArray) {
-    super(name);
+  constructor(numbersArray) {
+    super("Tri à bulles");
     this._numbersArray = super.duplicateArray(numbersArray);
   }
 
@@ -83,6 +83,36 @@ class BubbleSort extends Sort {
       if (isSorted) {
         return comparisonsNumber;
       }
+    }
+    return comparisonsNumber;
+  }
+}
+
+class InsertionSort extends Sort {
+  constructor(numbersArray) {
+    super("Tri par insertion");
+    this._numbersArray = super.duplicateArray(numbersArray);
+  }
+
+  get numbersArray() {
+    return this._numbersArray;
+  }
+
+  set numbersArray(newNumbersArray) {
+    this._numbersArray = newNumbersArray;
+  }
+
+  performThisSort() {
+    let comparisonsNumber = 0;
+    for (let i = 1; i < this._numbersArray.length; i++) {
+      let current = this._numbersArray[i];
+      let j = i - 1;
+      while (j >= 0 && this._numbersArray[j] > current) {
+        comparisonsNumber++;
+        this._numbersArray[j + 1] = this._numbersArray[j];
+        j--;
+      }
+      this._numbersArray[j + 1] = current;
     }
     return comparisonsNumber;
   }
@@ -129,9 +159,12 @@ if (myArgs.length === 0) {
                 console.error(`La ligne n°${lineIndex + 1} ne contient aucun nombre!`);
               } else {
                 console.log(`Début du traitement de la ligne n°${lineIndex + 1} : "${numbersArray}"...`);
-                const bubble = new BubbleSort("Tri à bulle", numbersArray);
+                const bubble = new BubbleSort(numbersArray);
                 bubble.performSort();
                 console.log(bubble.getAllInfo(bubble.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
+                const insertion = new InsertionSort(numbersArray);
+                insertion.performSort();
+                console.log(insertion.getAllInfo(insertion.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
               }
             }
           }
