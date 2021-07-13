@@ -118,6 +118,44 @@ class InsertionSort extends Sort {
   }
 }
 
+class SelectionSort extends Sort {
+  constructor(numbersArray) {
+    super("Tri par sélection");
+    this._numbersArray = super.duplicateArray(numbersArray);
+  }
+
+  get numbersArray() {
+    return this._numbersArray;
+  }
+
+  set numbersArray(newNumbersArray) {
+    this._numbersArray = newNumbersArray;
+  }
+
+  swap(numbersArray, index1, index2) {
+    let temp = numbersArray[index1];
+    numbersArray[index1] = numbersArray[index2];
+    numbersArray[index2] = temp;
+  }
+
+  performThisSort() {
+    let comparisonsNumber = 0;
+    for (let j = 0; j < this._numbersArray.length - 1; j++) {
+      let iMin = j;
+      for (let i = j + 1; i < this._numbersArray.length; i++) {
+        comparisonsNumber++;
+        if (this._numbersArray[i] < this._numbersArray[iMin]) {
+          iMin = i;
+        }
+      }
+      if (iMin != j) {
+        this.swap(this._numbersArray, j, iMin);
+      }
+    }
+    return comparisonsNumber;
+  }
+}
+
 const fs = require("fs");
 
 const myArgs = process.argv.slice(2);
@@ -165,6 +203,9 @@ if (myArgs.length === 0) {
                 const insertion = new InsertionSort(numbersArray);
                 insertion.performSort();
                 console.log(insertion.getAllInfo(insertion.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
+                const selection = new SelectionSort(numbersArray);
+                selection.performSort();
+                console.log(selection.getAllInfo(selection.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
               }
             }
           }
