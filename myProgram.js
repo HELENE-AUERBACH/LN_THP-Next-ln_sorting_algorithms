@@ -156,6 +156,57 @@ class SelectionSort extends Sort {
   }
 }
 
+class QuickSort extends Sort {
+  constructor(numbersArray) {
+    super("Tri rapide");
+    this._numbersArray = super.duplicateArray(numbersArray);
+  }
+
+  get numbersArray() {
+    return this._numbersArray;
+  }
+
+  set numbersArray(newNumbersArray) {
+    this._numbersArray = newNumbersArray;
+  }
+
+  swap(numbersArray, index1, index2) {
+    let temp = numbersArray[index1];
+    numbersArray[index1] = numbersArray[index2];
+    numbersArray[index2] = temp;
+  }
+
+  qs(numbersArray, left, right, comparisonsTotalNumber) {
+    let comparisonsNumber = comparisonsTotalNumber;
+    //console.log(`Init comparisonsNumber = ${comparisonsNumber} pour ${left} et ${right}`);
+    if (left >= right) {
+      return comparisonsNumber;
+    }
+    let pivot = numbersArray[right];
+    let i = left - 1;
+    for (let j = left; j < right; j++) {
+      comparisonsNumber++;
+      if (numbersArray[j] < pivot) {
+        i += 1;
+        this.swap(this._numbersArray, i, j);
+      }
+    }
+    this.swap(this._numbersArray, i + 1, right);
+    //console.log(`comparisonsNumber = ${comparisonsNumber} pour ${left} et ${right}`);
+    let comparisonsNumberInLeft = this.qs(numbersArray, left, i, comparisonsNumber);
+    //console.log(`comparisonsNumberInleft = ${comparisonsNumberInLeft} pour ${left} et ${i}`);
+    let comparisonsNumberInRight = this.qs(numbersArray, i + 2, right, comparisonsNumberInLeft);
+    //console.log(`comparisonsNumberInRight = ${comparisonsNumberInRight} pour ${i + 2} et ${right}`);
+    return comparisonsNumberInRight;
+  }
+
+  performThisSort() {
+    let comparisonsTotalNumber = this.qs(this._numbersArray, 0, this._numbersArray.length - 1, 0);
+    //console.log(`comparisonsTotalNumber = ${comparisonsTotalNumber} pour 0 et ${this._numbersArray.length - 1}`);
+    return comparisonsTotalNumber;
+  }
+}
+
 const fs = require("fs");
 
 const myArgs = process.argv.slice(2);
@@ -206,6 +257,9 @@ if (myArgs.length === 0) {
                 const selection = new SelectionSort(numbersArray);
                 selection.performSort();
                 console.log(selection.getAllInfo(selection.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
+                const quick = new QuickSort(numbersArray);
+                quick.performSort();
+                console.log(quick.getAllInfo(quick.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
               }
             }
           }
