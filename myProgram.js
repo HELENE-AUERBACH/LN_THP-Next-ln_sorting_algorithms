@@ -17,7 +17,7 @@ class Sort {
   }
   
   validateName(newName) {
-    if (newName !== undefined && newName !== null && ["Tri à bulles", "Tri par insertion", "Tri par sélection", "Tri rapide"].includes(newName)) {
+    if (newName !== undefined && newName !== null && ["Tri à bulles", "Tri par insertion", "Tri par sélection", "Tri rapide", "Tri fusion"].includes(newName)) {
       return newName;
     } else {
       console.log("Le nom du tri doit être l'une des valeurs suivantes : \"Tri à bulle\", \"Tri par insertion\", \"Tri par sélection\" ou \"Tri rapide\"!");
@@ -207,6 +207,60 @@ class QuickSort extends Sort {
   }
 }
 
+class MergeSort extends Sort {
+  constructor(numbersArray) {
+    super("Tri fusion");
+    this._numbersArray = super.duplicateArray(numbersArray);
+    this._comparisonsTotalNumber = 0;
+  }
+
+  get numbersArray() {
+    return this._numbersArray;
+  }
+
+  set numbersArray(newNumbersArray) {
+    this._numbersArray = newNumbersArray;
+  }
+
+  merge(left, right) {
+    let comparisonsNumber = 0;
+    let arr = [];
+    // Break out of loop if any one of the array gets empty
+    //console.log(`A l'appel left = [${left}] et right = [${right}]`);
+    while (left !== undefined && left.length && right !== undefined && right.length) {
+      // Pick the smaller among the smallest element of left and right sub arrays
+      comparisonsNumber++;
+      if (left[0] < right[0]) {
+        arr.push(left.shift());
+      } else {
+        arr.push(right.shift());
+      }
+    }
+    this._comparisonsTotalNumber += comparisonsNumber;
+    // Concatenating the leftover elements
+    // (in case we didn't go through the entire left or right array)
+    //console.log(`En sortie arr = [${arr}] et left = [${left}] et right = [${right}]`);
+    return [ ...arr, ...left, ...right ];
+  }
+
+  mergeSort(numbersArray) {
+    // Base case or terminating case
+    //console.log(`A l'appel numbersArray = [${numbersArray}]`);
+    if (numbersArray === undefined || numbersArray.length < 2) {
+      return numbersArray;
+    }
+    const half = numbersArray.length / 2;
+    const left = numbersArray.splice(0, half);
+    //console.log(`left = [${left}] et numbersArray = [${numbersArray}]`);
+    return this.merge(this.mergeSort(left), this.mergeSort(numbersArray));
+  }
+
+  performThisSort() {
+    this._numbersArray = this.mergeSort(this._numbersArray);
+    return this._comparisonsTotalNumber;
+  }
+}
+
 const fs = require("fs");
 
 const myArgs = process.argv.slice(2);
@@ -260,6 +314,9 @@ if (myArgs.length === 0) {
                 const quick = new QuickSort(numbersArray);
                 quick.performSort();
                 console.log(quick.getAllInfo(quick.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
+                const merge = new MergeSort(numbersArray);
+                merge.performSort();
+                console.log(merge.getAllInfo(merge.numbersArray), `à partir de la liste originale : "${numbersArray}"`);
               }
             }
           }
